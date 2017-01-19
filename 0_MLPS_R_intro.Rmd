@@ -2,9 +2,10 @@
 title: "0_MLPS_R_introduction"
 author: "Zhe Zhang (TA - Heinz CMU PhD)"
 date: "1/19/2017"
-output: 
+output:
+  pdf_document: default
   html_document:
-    css: '~/Dropbox/avenir-white.css'
+    css: ~/Dropbox/avenir-white.css
 ---
 
 ```{r setup, include=FALSE}
@@ -44,7 +45,7 @@ Furthermore, I recommend starting with R by using several packages that the book
 * `tidyr` package (cleaning and re-arranging the dataset) (more on this later)
 * `stringr` package (a clean syntax to deal with strings and text data)
 
-**All of these packages are wrapped up into one package, `tidyverse` package. You will see this referred to in the book**
+**All of these packages are wrapped up into one package, `tidyverse` package. You will see this referred to in the R4DS book.**
 
 ### Key R Commands to Know
 
@@ -54,6 +55,7 @@ This is a living document that will continue to update. For now, I will link to 
 * Dealing with objects basics <http://r4ds.had.co.nz/workflow-basics.html>
 * Visualization basics (3.1 - 3.6) <http://r4ds.had.co.nz/data-visualisation.html>
     + This is quite important to feel comfortable with because it is the important first step of MLPS and helps you feel connected with the data. I emphasize the practice here.
+    + **We will cover this in more detail in the `1_R_MLPS_visualization` file.
 * Data transformation (all sections) <http://r4ds.had.co.nz/transform.html>
 * Programming R scripts <http://r4ds.had.co.nz/workflow-scripts.html>
 

@@ -1,0 +1,76 @@
+---
+title: "0_MLPS_R_introduction"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "1/19/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lecture 2: Business & Data Understanding
+
+Key specific tasks we covered in this lecture are around exploratory data analysis.
+* dataset attribute types
+* working with categorical variables (`factor` variables in R)
+* data matrix styles (long vs wide)
+* checking for data quality 
+
+* temporal line plot
+* bar chart
+* histogram and 1-dimensional density visualization (and bin sizes)
+* 2-dimensional histograms
+* kernel density estimation
+* median, quantile, quartile, interquartile range
+* box plots
+* scatter plots (many plots, overplotting, correlation graphs)
+* parallel coordinates
+* radar plots
+
+## Dataset Actions
+
+```{r}
+# use the flights dataset
+require(nycflights13)
+
+# use `glimpse()` or `str()` to see a dataset's attributes
+glimpse(flights)
+```
+
+When your data has categorical values, if dataset has already been cleaned, you may not need to do much with it except be aware of it. When there are issues or things you'd like to change about your categorical variables, use the `forcats` package. Also, it can help reduce errors to not use factors in the first place, the `tidyverse` packages should work just as well with text/character variables versus factors. To convert a column to a factor use `{r} df$factor_column <- as.factor(df$factor_column)`.
+
+To convert a dataset between a "wide" format and a "long" format, use the `gather` and `spread` functions available in the tidyr package. See more here: <http://r4ds.had.co.nz/tidy-data.html#tidy-data-1>
+
+```{r}
+library(tidyverse)
+
+table4a
+
+# renaming to avoid the weird columns that start with numbers
+renamed_table4a <- table4a %>% rename('yr_1999' = `1999`, 'yr_2000' = `2000`)
+
+# gather the data to make it long and make each row an observation
+renamed_table4a %>% 
+  gather(yr_1999, yr_2000, key = "year", value = "cases")
+```
+
+See here <http://r4ds.had.co.nz/tidy-data.html#spreading> for more information on making data from long to wide.
+
+To check for data quality and potential missing variables, one of several options is to use summarization. This will not catch all potential errors, but is a way to start. This is especially useful when you have subgroups or categorical variables from which to compare. This chapter covers a lot of the EDA that we talked about in class in R: <http://r4ds.had.co.nz/exploratory-data-analysis.html>
+
+```{r}
+require(flights)
+
+
+```
+## Visualization Actions
+
+As mentioned above, see <http://r4ds.had.co.nz/exploratory-data-analysis.html> for additional coverage on visualization and exploratory data analysis. Some visualization commands will be briefly described below.
+
+```{r}
+
+```
+
