@@ -7,6 +7,11 @@ See course website for additional background: http://www.andrew.cmu.edu/user/lak
 
 This course provides R as a basis for teaching (though other languages are accepted). To support this, we provide a cheatsheet introducing R for MLPS and providing a cheatsheet of commands, brief examples, and references necessary for each lecture.
 
+To view the cheatsheets in your browser:
+
+* Lecture 1: http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/0_MLPS_R_intro.html
+* Lecture 2: http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/2_MLPS_R_visualization.html
+
 ### Course Description
 
 Machine Learning (ML) is centered around automated methods that improve their own performance through learning patterns in data, and then using the uncovered patterns to predict the future and make decisions. ML is heavily used in a wide variety of domains such as business, finance, healthcare, security, etc. for problems including display advertising, fraud detection, disease diagnosis and treatment, face/speech/handwriting/object recognition, automated navigation, to name a few. See this for an extended introduction. 
