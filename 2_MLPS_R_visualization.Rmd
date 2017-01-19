@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
 ```
 
 ## Lecture 2: Business & Data Understanding
@@ -34,10 +34,11 @@ Key specific tasks we covered in this lecture are around exploratory data analys
 
 ```{r}
 # use the flights dataset
-require(nycflights13)
+require(tidyverse)
 
 # use `glimpse()` or `str()` to see a dataset's attributes
-glimpse(flights)
+glimpse(iris)
+glimpse(mtcars)
 ```
 
 When your data has categorical values, if dataset has already been cleaned, you may not need to do much with it except be aware of it. When there are issues or things you'd like to change about your categorical variables, use the `forcats` package. Also, it can help reduce errors to not use factors in the first place, the `tidyverse` packages should work just as well with text/character variables versus factors. To convert a column to a factor use `{r} df$factor_column <- as.factor(df$factor_column)`.
