@@ -10,7 +10,7 @@ This course provides R as a basis for teaching (though other languages are accep
 To view the cheatsheets in your browser:
 
 * Lecture 1: <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/0_MLPS_R_intro.html>
-* Lecture 2: <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/2_MLPS_R_visualization.html>
+* Lecture 2 (incomplete): <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/2_MLPS_R_visualization.html>
 
 ### Course Description
 
