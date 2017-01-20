@@ -95,22 +95,118 @@ The R4DS has more examples and a thorough discussion of both visualization and e
 * <http://r4ds.had.co.nz/data-visualisation.html>
 * <http://r4ds.had.co.nz/exploratory-data-analysis.html>
 
+We recommend the use of the `ggplot2` package in this class. It has a consistent and clear syntax that helps you think about what data you're interested in visualizing. The R4DS book has a deeper explanation.
+
+Basic graphics in `ggplot2` are a combination of two pieces:
+
+* `ggplot(data = your_data)`
+* `geom_SOME_VIZ_TYPE(mapping = aes(x = x_var, y = y_var, color = color_var))`
+
+The `ggplot()` function tells which dataset to use. Then, we can think about each of the following pieces as adding layers to an empty image. You can add a line plot layer, a point layer, a histogram layer, etc. Each layer type will have different arguments, of at least 1 data variable to plot (e.g. histogram). Sometimes, we can make our layers capture additional information by tweaking the layer's aesthetics (color, size, shape, linetype) by giving them additional variables.
+
+If you want color, size, shape, or linetype to not **vary** based on a data variable, place that option outside of the `aes()` (aesthetics) function call.
+
+Sometimes, you will see the `ggplot()` function contain the aesthetics (as shown in examples below). This means that these will be the default aesthetics that will be passed to all geom_layers. This is useful when we plot several layers together (e.g., a line plot and a point plot together).
+
 ```{r}
 # More specific examples of commands incoming
 #   mostly based around ggplot2 package
 library(tidyverse)
 library(ggplot2) # redundant, but here for emphasis
 
-# temporal line plot
-# bar chart
+# we'll use the mpg dataset
+head(mpg)
+
+# line plot
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_line()
+
+# sometimes we want to group on different categorical variables
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, group = cyl)) +
+  geom_line()
+# but we can't tell the lines apart without color
+ggplot(data = mpg, 
+       mapping = aes(x = displ, y = hwy,
+                     group = cyl, color = cyl)) +
+  geom_line()
+# ggplot is treating CYL as a continuous variable;
+#   we want to avoid this
+# but we can't tell the lines apart without color
+ggplot(data = mpg, 
+       mapping = aes(x = displ, y = hwy,
+                     group = cyl, color = as.character(cyl))) +
+  geom_line()
+
+# bar chart (only uses one variable because it counts automatically)
+#   IF you want to supply your own count instead, use
+#   geom_bar(stat = "identity")
+ggplot(mpg, aes(x = displ)) +
+  geom_bar()
+
 # histogram and 1-dimensional density visualization (and bin sizes)
-# 2-dimensional histograms
+ggplot(mpg, aes(x = hwy)) +
+  geom_histogram()
+
+ggplot(mpg, aes(x = hwy)) +
+  geom_histogram(binwidth = 2.5)
+
+# 2-dimensional histograms/density
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_density2d() +
+  geom_point()
+
 # kernel density estimation
+#   we use the built in smoother in ggplot for now
+#   GEOM_SMOOTH()
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy),
+              method = "loess", span = 0.5)
+
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy),
+              method = "loess", span = 2)
+
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy),
+              method = "lm")
+
 # median, quantile, quartile, interquartile range
+# use ecdf() function for these attributes
+#   the empirical cumulative density function
+ecdf_hwy_mpg <- ecdf(mpg$hwy)
+# median
+quantile(ecdf_hwy_mpg, 0.5)
+quantile(ecdf_hwy_mpg, seq(0.25, 0.75, by = 0.25))
+
 # box plots
+ggplot(mpg, aes(x = class, y = hwy, color = class)) +
+  geom_boxplot()
+
 # scatter plots (many plots, overplotting, correlation graphs)
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point() + facet_wrap(~cyl)
+
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point() + facet_wrap(~class)
+
 # parallel coordinates
+#   for some
+long_iris_df <- iris %>% mutate(obs_id = row_number()) %>%
+  gather(key = measurement, value = value, -obs_id, -Species)
+ggplot(long_iris_df, 
+       aes(x = measurement, y = value, 
+           group = obs_id, color = Species)) +
+  geom_line()
+
 # radar plots
+#   if you're interested, check out this ggplot2 extension
+# http://www.ggplot2-exts.org/ggradar.html
 ```
 
-This is incomplete at the moment, apologies. I will make an announcment on Piazza once this is complete, likely by Friday morning.
+Notes from the above examples:
+
+* in the parallel coordinates example, note that we could not have plotted this without making the iris data a long dataset, where each measurement of an observation gets one row. `ggplot` enforces this structure because it makes it clear what we're studying. In this case, we're interested in comparing the different measurements against each other, so measurement type should be a variable (hence, row), rather than a particular description of a measurement (i.e. column). This follows the tidy data philosophy (see R4DS for more).
+* when doing line plots, it can be important to specify how we're connecting/grouping our data into a line. Use the `group` aesthetic to guide this and think through this.
