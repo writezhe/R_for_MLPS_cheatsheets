@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
 ## Recommended R Software
@@ -18,7 +18,7 @@ I recommend the use of RStudio program for most of your R coding. Download at <h
 
 RStudio is great because it combines several important pieces of your coding environment in one place.
 
-* Suggestion. I prefer to have my coding on one half of the screen and the "Console" output -- where I can debug and test code -- on the other half of the screen. Plots, images, and help files then come up occasionally. This isn't the default. To adjust this, go to RStudio's `Preferences > Pane` Layout.
+* Suggestion: I prefer to have my coding on one half of the screen and the "Console" output -- where I can debug and test code -- on the other half of the screen. Plots, images, and help files then come up occasionally. This isn't the default. To adjust this, go to RStudio's `Preferences > Pane` Layout.
 
 This document is being made in an RMarkdown journal format, which allows easy integration of (1) R code, (2) images, and (3) free text. I *highly suggest* if you're using R for assignments to use RMarkdown journals, which make it easier for both you and the graders. 
 
@@ -62,24 +62,52 @@ To start, I link to specific chapters in the R4DS book. Here's my recommended re
 See the below image from the R4DS book. For this class, it's important that you feel comfortable with each of the steps below. The book covers these topics in more depth.
 ![](http://r4ds.had.co.nz/diagrams/data-science-explore.png)
 
-```{r}
+```{r, eval=F}
 ## Importing Data
+df_csv <- read.csv(file = "some_csv_file_in_same_folder.csv", stringsAsFactors = FALSE)
+# this will import string columns as categorical factor variables,
+#   which is useful to aware of and may want to be avoided
+df_csv <- read.csv(file = "some_csv_file_in_same_folder.csv", stringsAsFactors = TRUE)
 
+# using the tidyverse readr package (stringAsFactors = FALSE default)
+library(tidyverse)
+df_csv <- read_csv(file = "some_csv_file_in_same_folder.csv")
+df_text <- read_table(file = "some_tab_delimited_file.txt")
 
+# very helpful to read the documentation
+?read_csv
+?read_table
 
 ## Investigating Datasets
-
-
+head(mtcars)
+summary(mtcars)
 ```
+
+*RStudio tips*: use tab completion to help with typos and speed; use tabs inside functions to help remember what inputs they need; use tab to cycle through similarly named functions to see what's available
 
 **Dealing with objects basics** <http://r4ds.had.co.nz/workflow-basics.html>
 
 ```{r}
 ## Creating Your Own Objects
+my_value <- 10
+my_vector <- c(1, 2, 3, 4, 5)
+my_string <- "Hello, World!"
 
+# all three of the below are identical
+# each calls the seq() function
+my_sequence <- seq(from = 1, to = 10)
+my_sequence <- seq(1, 10)
+my_sequence <- seq(10)
 
+# we can call the seq() function with a different options
+seq(1, 10, by = 2)
+seq(1, 10, length.out = 5)
+
+# almost all outputs and objects (including regressions, models, etc)
+#   can be saved as objects for future use in R
 ```
 
+For *naming*, I recommend the use of underscores between words for variables. Some people prefer `camelCaseForVariables` too, where all subsequent words are capitalized.
 
 **Visualization basics (3.1 - 3.6)** <http://r4ds.had.co.nz/data-visualisation.html>
 
@@ -87,13 +115,52 @@ This is quite important to feel comfortable with because it is the important fir
 
 **Data transformation (all sections)** <http://r4ds.had.co.nz/transform.html>
 
+While this will be covered in more in-depth a future cheatsheet (`3_MLPS_R_data_preparation`), it's important to get a feel for these important functions early on. I recommend you start with the simple examples here:  
+<https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html>
+
+As you begin to play around with more dataset manipulation, perhaps for you project, I highly encourage a closer look at the many useful functions of `dplyr` and `tidyr` packages. `dplyr` has lots of options for manipulating the data and  `tidyr` is really helpful in (1) changing the shape of your dataset and (2) filling in missing holes and generally, dealing with "messy" datasets.
+
 **Programming R scripts** <http://r4ds.had.co.nz/workflow-scripts.html>
 
-Additionally, as you get more familiar with R, I suggest you look at each of the sections mentioned here and read up on the examples as you begin to want to write functions, for loops, and piping several commands together. I particularly recommend looking pipes as it is not as commonly seen and works very well with the `dplyr` package.
+Lastly and importantly, it's important to treat R as a programming language. Get comfortable writing your own functions, loops, and scripts so that you can repeat your commands and tweak them as you go. Take a look at the following brief sections:
 
 * <http://r4ds.had.co.nz/program-intro.html>
 * <http://r4ds.had.co.nz/pipes.html>
+* <http://r4ds.had.co.nz/functions.html>
 
-Lastly, I anticipate as you start doing a lot more dataset manipulation, perhaps for you project, I encourage a closer look at how `dplyr` functions.
+I particularly recommend looking pipes as you may not have seen it before and works very well with the logical verbs of the `dplyr` package.
 
-* <https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html>
+
+```{r}
+## Some programming examples assuming knowledge of dplyr
+library(dplyr)
+library(nycflights13)
+
+# notice how piping one functions result to the next makes
+#   the code read very cleanly and logically
+# I recommend trying this to get coherant chunks of code
+#   in one place. It's possible to over-do it on piping though
+united_EWR_flights <- flights %>%
+  filter(origin == "EWR", carrier == "UA") %>%
+  group_by(dest, month) %>%
+  summarise(num_flights = n(), 
+            avg_distance = mean(distance)) %>%
+  arrange(desc(num_flights))
+
+united_EWR_flights %>% head(n = 20)
+```
+
+```{r}
+# a basic (not useful) for loop
+for (i in 1:nrow(mtcars)) {
+  if (i %% 5 == 0) {
+    print(i) 
+  }
+}
+```
+
+**Lists** <http://r4ds.had.co.nz/lists.html>
+
+Lastly, sometimes you may come across a function that outputs lists. Or, you may want to store data or model objects in something other than a dataframe. Lists can also serve a purpose of a dictionary, which are objects seen in other languages.
+
+To do so, use **lists**. Lists are quite flexible in R, each list item can be named and can be any object in R. Read more about lists if they come up and you may find that lists can be quite helpful.
