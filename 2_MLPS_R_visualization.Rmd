@@ -60,18 +60,57 @@ renamed_table4a %>%
 
 See here <http://r4ds.had.co.nz/tidy-data.html#spreading> for more information on making data from long to wide.
 
-To check for data quality and potential missing variables, one of several options is to use summarization. This will not catch all potential errors, but is a way to start. This is especially useful when you have subgroups or categorical variables from which to compare. This chapter covers a lot of the EDA that we talked about in class in R: <http://r4ds.had.co.nz/exploratory-data-analysis.html>
+To check for data quality and potential missing variables, two keys options are summarization and visualization (and both combined). We discuss visualization below. This will not catch all potential errors, but is a way to start. This is especially useful when you have subgroups or categorical variables from which to compare. This chapter covers a lot of the EDA that we talked about in class in R: <http://r4ds.had.co.nz/exploratory-data-analysis.html>
 
 ```{r}
-require(flights)
+library(dplyr)
+library(nycflights13)
 
+by_day <- group_by(flights, year, month, day)
+summarise(by_day, delay = mean(dep_delay, na.rm = TRUE))
 
+by_dest <- group_by(flights, dest)
+delay <- summarise(by_dest,
+  count = n(),
+  dist = mean(distance, na.rm = TRUE),
+  delay = mean(arr_delay, na.rm = TRUE)
+)
+delay <- filter(delay, count > 20, dest != "HNL")
+
+# It looks like delays increase with distance up to ~750 miles 
+# and then decrease. Maybe as flights get longer there's more 
+# ability to make up delays in the air?
+ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
+  geom_point(aes(size = count), alpha = 1/3) +
+  geom_smooth(se = FALSE)
+
+# cite: R4DS
 ```
+
+
 ## Visualization Actions
 
-As mentioned above, see <http://r4ds.had.co.nz/exploratory-data-analysis.html> for additional coverage on visualization and exploratory data analysis. Some visualization commands will be briefly described below.
+The R4DS has more examples and a thorough discussion of both visualization and especially, important, how to use visualization for exploratory analysis, which is focus of the early part of this course. I highly recommend reading through these two sections and looking at the examples. If you're not already comfortable with the pieces, doing so will be quite helpful for all your work in this class and going forward with R and analysis. I will only briefly touch on the specific commands below.
+
+* <http://r4ds.had.co.nz/data-visualisation.html>
+* <http://r4ds.had.co.nz/exploratory-data-analysis.html>
 
 ```{r}
+# More specific examples of commands incoming
+#   mostly based around ggplot2 package
+library(tidyverse)
+library(ggplot2) # redundant, but here for emphasis
 
+# temporal line plot
+# bar chart
+# histogram and 1-dimensional density visualization (and bin sizes)
+# 2-dimensional histograms
+# kernel density estimation
+# median, quantile, quartile, interquartile range
+# box plots
+# scatter plots (many plots, overplotting, correlation graphs)
+# parallel coordinates
+# radar plots
 ```
 
+This is incomplete at the moment, apologies. I will make an announcment on Piazza once this is complete, likely by Friday morning.
