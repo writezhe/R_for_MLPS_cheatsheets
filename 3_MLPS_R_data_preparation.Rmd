@@ -26,6 +26,12 @@ Key specific tasks we covered in this lecture are around data preparation.
 * MDS (multi-dimensional scaling)
 * manifold learning (isomap, LLE)
 
+### General `caret` Package
+
+As we begin to use more machine learning and statistical techniques, we recommend the `caret` package. Similiar to what the `tidyverse` aims to do for data munging, the `caret` package aims to bring together various pre-processing, machine learning, visualization, and performance analysis into a consistent syntax and within a commmon environment. We will reference the `caret` package, but it may also be a useful alternative to some of the existing commands we've already referenced.
+
+### Specific Data Preparation Pieces
+
 Working with Strings:
 
 ```{r}
@@ -97,10 +103,15 @@ table(cut_width(runif(1000), 0.1, center = 0))
 
 Normalization of variables:
 
-```{r}
+```{r, eval = F}
+# NOT EVALUATED
+
 # use the base function scale() to perform z-score normalization on columns
 x <- matrix(1:10, ncol = 2)
 centered.x <- scale(x, scale = FALSE)
+
+# with the caret package
+preProcValues <- preProcess(training, method = c("center", "scale"))
 ```
 
 Correlation plot of features:
@@ -129,7 +140,7 @@ irisTrain <- iris[ trainIndex,] # training split
 irisTest  <- iris[-trainIndex,] # testing split
 ```
 
-Parameter estimation using caret: <http://topepo.github.io/caret/model-training-and-tuning.html#tune>  
+Parameter cross-validation estimation and tuning using caret:   <http://topepo.github.io/caret/model-training-and-tuning.html#tune>  
 and <http://topepo.github.io/caret/model-training-and-tuning.html#customizing-the-tuning-process>  
 and <http://stackoverflow.com/questions/33470373/applying-k-fold-cross-validation-model-using-caret-package>
 

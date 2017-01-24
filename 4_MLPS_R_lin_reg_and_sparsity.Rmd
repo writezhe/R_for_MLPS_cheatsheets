@@ -1,0 +1,41 @@
+---
+title: "4_MLPS_R_linear_reg_and_sparsity"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "1/24/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
+```
+
+## Lecture 4: Linear Regression and Sparsity
+
+Key specific tasks we covered in this lecture are around linear regression and sparsity.
+
+* simple linear regression (unpenalized)
+    + RSS
+    + estimated parameters
+    + SE of estimated parameters
+    + confidence intervals
+    + t-stat
+    + p-value
+    + RSE
+    + R-squared
+    + F-statistic (overall and comparing subset of features)
+* heteroskedasticity
+* plotting residual plots, outliers, and high-leverage points
+* collinearity
+* VIF
+* sparse linear models w/feature selection
+    + forward stepwise
+    + backward stepwise
+    + hybrid stepwise
+    + C_p, AIC, BIC, adjusted R-squared
+    + ridge regression
+    + lasso regression
+* principal components regression (PCR)
+* partial least squares
+
