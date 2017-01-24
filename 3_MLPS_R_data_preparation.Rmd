@@ -1,0 +1,146 @@
+---
+title: "3_MLPS_R_data_preparation"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "1/22/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
+```
+
+## Lecture 3: Data Preparation
+
+Key specific tasks we covered in this lecture are around data preparation.
+
+* string and text data adjustments (replacing words, removing spaces, adjusting capital letters)
+* identifying missing values
+* transforming factors into numerical
+* discretization (equi-width, equi-frequency, V-optimal)
+* normalization (min-max normalization, Z-score normalization, robust z-score)
+* correlation analysis among features
+* cross-validation function in R
+* PCA
+* MDS (multi-dimensional scaling)
+* manifold learning (isomap, LLE)
+
+Working with Strings:
+
+```{r}
+## Working with strings
+library(stringr)
+# or library(tidyverse)
+
+fruits <- c("one apple", "two pears", "three bananas")
+str_replace(fruits, "[aeiou]", "-")
+str_replace_all(fruits, "[aeiou]", "-")
+str_replace_all(fruits, " ", "")
+
+str_replace_all(fruits, "two", "five") %>% 
+  str_to_title()
+```
+
+Identifying Missing Values:
+
+(please check out the other useful options in `tidyr`: <https://cran.r-project.org/web/packages/tidyr/tidyr.pdf>)
+
+```{r}
+library(tidyverse)
+
+dN <- dd <- USJudgeRatings; dN[3,6] <- NA
+anyNA(dd) # FALSE
+anyNA(dN) # TRUE
+
+count_na_in_col <- function(col){
+  sum(is.na(col))
+}
+dN %>% summarise_all(count_na_in_col)
+# can augment this with group_by if needed
+
+# use the replace_na() function to easily replace the NA values for each column
+df <- data_frame(x = c(1, 2, NA), y = c("a", NA, "b"))
+df %>% replace_na(list(x = 0, y = "unknown"))
+```
+
+Transforming factors:
+
+```{r}
+library(forcats) # useful package for factors
+
+glimpse(iris)
+new_iris <- iris %>%
+  mutate(num_species = as.numeric(Species),
+         Species = as.character(Species))
+glimpse(new_iris)
+
+# fct_relevel() is a useful function in forcats
+# fct_reorder()
+```
+
+Discretization:
+
+```{r}
+# use the cut_TYPE functions in dplyr
+library(dplyr)
+
+table(cut_interval(1:100, 10))
+table(cut_interval(1:100, 11))
+
+table(cut_number(runif(1000), 10))
+
+table(cut_width(runif(1000), 0.1))
+table(cut_width(runif(1000), 0.1, boundary = 0))
+table(cut_width(runif(1000), 0.1, center = 0))
+```
+
+Normalization of variables:
+
+```{r}
+# use the base function scale() to perform z-score normalization on columns
+x <- matrix(1:10, ncol = 2)
+centered.x <- scale(x, scale = FALSE)
+```
+
+Correlation plot of features:
+
+```{r}
+# correlation table
+cor(iris[,1:4])
+# correlation graphic
+pairs(iris[,1:4])
+# 
+```
+
+## CARET package (incl cross validation)
+
+Please see the CARET guidebook: <http://topepo.github.io/caret/index.html>.
+
+```{r}
+library(caret)
+
+set.seed(3456) # setting seed to repeat the same randomization
+trainIndex <- createDataPartition(iris$Species, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+head(trainIndex)
+irisTrain <- iris[ trainIndex,] # training split
+irisTest  <- iris[-trainIndex,] # testing split
+```
+
+Parameter estimation using caret: <http://topepo.github.io/caret/model-training-and-tuning.html#tune>  
+and <http://topepo.github.io/caret/model-training-and-tuning.html#customizing-the-tuning-process>  
+and <http://stackoverflow.com/questions/33470373/applying-k-fold-cross-validation-model-using-caret-package>
+
+## Dimensionality Reduction
+
+```{r}
+prcomp(USArrests)  # inappropriate
+prcomp(USArrests, scale = TRUE)
+prcomp(~ Murder + Assault + Rape, data = USArrests, scale = TRUE)
+summary(prcomp(USArrests, scale = TRUE))
+# 4 principal componenets were estimated
+plot(prcomp(USArrests))
+```
+
