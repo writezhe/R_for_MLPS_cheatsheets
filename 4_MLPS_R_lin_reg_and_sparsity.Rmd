@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
 
 Key specific tasks we covered in this lecture are around linear regression and sparsity.
 
-* simple linear regression (unpenalized)
+* simple/multiple linear regression (unpenalized)
     + RSS
     + estimated parameters
     + SE of estimated parameters
@@ -25,6 +25,7 @@ Key specific tasks we covered in this lecture are around linear regression and s
     + RSE
     + R-squared
     + F-statistic (overall and comparing subset of features)
+    + categorical variables
 * heteroskedasticity
 * plotting residual plots, outliers, and high-leverage points
 * collinearity
@@ -38,4 +39,156 @@ Key specific tasks we covered in this lecture are around linear regression and s
     + lasso regression
 * principal components regression (PCR)
 * partial least squares
+
+### General examples of model building and analysis
+
+R4DS section on model building: <http://r4ds.had.co.nz/model-building.html>  
+Intro to Statistical Learning section on linear regression with R code (page 73 of the PDF): <http://www-bcf.usc.edu/~gareth/ISL/ISLR%20Sixth%20Printing.pdf>
+
+### Simple Linear Regression
+
+```{r}
+library(tidyverse)
+# using R's built in regression functions
+#   lm() function stands for linear models
+library(ISLR)
+head(Auto)
+
+# simple linear model predicting hwy on horsepower
+simple_linear <- lm(mpg ~ horsepower, data = Auto)
+summary_simple_lm <- summary(simple_linear)
+print(summary_simple_lm)
+
+# RSS
+simple_linear_rss <- sum(simple_linear$residuals^2)
+simple_linear_rss
+
+# estimated parameters
+# standard errors of estimated parameters
+# t-statistic (3rd column)
+# p-value (4th column)
+summary_simple_lm$coefficients
+
+# confidence intervals
+confint(simple_linear, level = 0.95)
+
+# RSE
+sqrt(sum(simple_linear$residuals^2) / 
+       (nrow(Auto) - 2 ))
+
+# R-squared
+summary_simple_lm$r.squared
+# TSS
+simple_linear_rss / (1 - summary_simple_lm$r.squared)
+
+# F-statistic (overall)
+summary_simple_lm$fstatistic
+
+# F-statistic (comparing nested models)
+#   the addition of cylinders appears to add
+#   predictive power according to this nested F-test
+multiple_linear <- lm(mpg ~ horsepower + cylinders,
+                      data = Auto)
+anova(simple_linear, multiple_linear)
+
+# categorical variables
+#   the lm() function will automatically transform
+#   string or factor variables for you
+#   Alternatively, you can use model.matrix()
+lm_with_categorical <- lm(mpg ~ horsepower + as.character(year),
+                          data = Auto)
+summary(lm_with_categorical)
+```
+
+### Plotting of linear regression fit
+
+```{r}
+# plot residuals against fitted to check for
+#   heteroskedasticity
+plot(simple_linear, which = 1)
+
+# plotting points by leverage
+plot(simple_linear, which = 5)
+
+# VIF
+library(car)
+vif(multiple_linear)
+```
+
+### Model Selection and Sparse Linear Models
+
+```{r}
+# R has a built-in stepwise function
+#   for AIC
+
+step_process <- 
+  step(object = lm(mpg ~ horsepower, 
+                   data = Auto %>% select(-name)), # starting point
+       scope = lm(mpg ~ ., # upper limit of possible search
+                  data = Auto %>% select(-name)), 
+       direction = "forward", 
+       # could also be "back" or "both" (for hybrid)
+       trace = 0.5)
+
+# for BIC, use step() function with option:
+#   "k = log(n)"
+# for Mallows' Cp, see the extractAIC() function arguments
+```
+
+Sparse/Penalized Linear Regression:
+
+```{r}
+library(glmnet)
+
+# to use glmnet, we need to create 
+#   our X feature matrix ahead of time
+x_for_glmnet <- model.matrix(mpg ~ .^2,
+                             data = Auto)
+
+# alpha = 0 (ridge)
+#   allow the function to select its own penalty
+#   values to try
+ridge_mpg <- glmnet(x = x_for_glmnet,
+                    y = Auto$mpg,
+                    family = "gaussian", # regression
+                    alpha = 0,
+                    standardize = TRUE)
+plot(ridge_mpg)
+
+# alpha = 1 (lasso)
+lasso_mpg <- glmnet(x = x_for_glmnet,
+                    y = Auto$mpg,
+                    family = "gaussian",
+                    alpha = 1,
+                    standardize = TRUE)
+plot(lasso_mpg)
+
+# predict using lasso
+predict(lasso_mpg, newx = x_for_glmnet[1:10,], s = c(0.75, 1.5))
+```
+
+### PCR & PLS
+
+PCR and PLS in `caret` package:  
+<https://www.r-bloggers.com/performing-principal-components-regression-pcr-in-r/>
+<http://topepo.github.io/caret/miscellaneous-model-functions.html#partial-least-squares-discriminant-analysis>
+
+### (Addition) Using the `caret` package for linear regression and other tasks:
+
+See here for different model details: <http://topepo.github.io/caret/train-models-by-tag.html>.
+
+```{r, eval=F}
+## BELOW NOT EVALUATED ##
+# using caret for linear regression
+library(caret)
+## Ridge Regression
+ridge_penalty_grid = expand.grid(lambda = c(0, 10^(seq(-1, -4, by = -0.25))))
+
+# Currently Not Finished
+# mpg_ridge <- train(form = mpg ~ .^2,
+#                    data = Auto,
+#                    trControl = trainControl("none"),
+#                    method = "ridge",
+#                    tuneGrid = ridge_penalty_grid)
+```
 

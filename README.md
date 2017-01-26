@@ -12,6 +12,7 @@ To view the cheatsheets in your browser:
 * Lecture 1: <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/0_MLPS_R_intro.html>
 * Lecture 2 (too large to open, download HTML file from GitHub and open with browser)
 * Lecture 3: <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/3_MLPS_R_data_preparation.html>
+* Lecture 4: <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/4_MLPS_R_lin_reg_and_sparsity.html>
 
 ### Course Description
 
