@@ -1,0 +1,18 @@
+---
+title: "8_MLPS_R_tree_methods"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "1/28/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
+```
+
+## Lecture 8: Tree-based Methods
+
+Key specific tasks we covered in this lecture:
+
+* 

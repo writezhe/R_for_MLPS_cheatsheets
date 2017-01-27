@@ -1,0 +1,26 @@
+---
+title: "5_MLPS_R_logistic_nonlinear_regression"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "1/24/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
+```
+
+## Lecture 5: Logistic Regression & Beyond Linearity
+
+Key specific tasks we covered in this lecture:
+
+* logistic regression
+* interaction effects and transformed variables in linear models
+* basis functions
+* polynomial regression
+* standard error curves for linear regression fits
+* step functions, regression splines and knots
+* natural cubic spline
+* local regression
+* Generalized Additive Models (GAMs)

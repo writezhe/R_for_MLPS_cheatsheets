@@ -1,0 +1,23 @@
+---
+title: "7_MLPS_R_model_evaluation"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "1/28/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
+```
+
+## Lecture 7: Model Evaluation
+
+Key specific tasks we covered in this lecture:
+
+* making a confusion matrix
+* precision, recall, F-measure
+* ROC curve graphic
+* AUC
+* precision-recall curve
+* lift and profit curves
