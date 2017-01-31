@@ -1,0 +1,23 @@
+---
+title: "6_MLPS_R_model_selection"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "1/28/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
+```
+
+## Lecture 6: Model Selection
+
+Key specific tasks we covered in this lecture:
+
+* training/validation/test set splits
+* empirical misclassification error
+* average squared error
+* k-fold cross validation
+* regularization and revisiting cross-validation in sparse linear models
+* AIC, BIC, MDL

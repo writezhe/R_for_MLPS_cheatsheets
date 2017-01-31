@@ -1,0 +1,123 @@
+---
+title: "5_MLPS_R_logistic_nonlinear_regression"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "1/24/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
+```
+
+## Lecture 5: Logistic Regression & Beyond Linearity
+
+Key specific tasks we covered in this lecture:
+
+* logistic regression
+* interaction effects and transformed variables in linear models
+* basis functions, natural cubic spline, regression splines and knots
+* standard error curves for linear regression fits
+* local regression
+* Generalized Additive Models (GAMs)
+
+In this cheatsheet, we'll focus on the base R functions for these actions. The `caret` package should have alternative implementations for several of these that build upon these base functions.
+
+Logistic regression (see more here <http://www.ats.ucla.edu/stat/r/dae/logit.htm>).
+
+```{r}
+## Logistic Regression
+#   we need to run a generalized linear model (GLM)
+#   a simple/multiple linear model is simply a GLM with 
+#     an identity link function and a Gaussian family of error variance
+#   a logit model has a binomial error variance, with a "logit" link function
+admit_data <- read.csv("http://www.ats.ucla.edu/stat/data/binary.csv")
+
+logit_admit <- glm(admit ~ gre + gpa, data = admit_data,
+                   family = binomial(link = 'logit'))
+summary(logit_admit)
+
+# interaction effects using `:`
+logit_interact <- glm(admit ~ gre + gpa:as.factor(rank), data = admit_data,
+                   family = binomial(link = 'logit'))
+summary(logit_interact)
+
+# use the `*` to include both individual effects and interactions
+logit_both <- glm(admit ~ gre + gpa*as.factor(rank), data = admit_data,
+                   family = binomial(link = 'logit'))
+summary(logit_both)
+
+## 
+```
+
+Basis Functions and Splines: 
+
+```{r}
+library(splines)
+
+## Basis Functions
+#   in this case, the df option specifies the unique regions to fit
+#   and subsequently, the number of knots too
+summary(basis_reg <- lm(weight ~ bs(height, df = 5), data = women))
+
+# Polynomial Regression
+#   use poly for getting orthogonal polynomials (avoid collinearity)
+logit_poly <- glm(admit ~ poly(gre, 2) + poly(gpa, 2),
+                  data = admit_data,
+                  family = binomial(link = 'logit'))
+summary(logit_poly)
+
+# Natural Splines
+#   similarly, you can specify the number of knots or df
+summary(nat_basis_reg <- lm(weight ~ bs(height, df = 3), data = women))
+```
+
+Standard Error Curves for Regressions. See [this](http://stats.stackexchange.com/questions/85560/shape-of-confidence-interval-for-predicted-values-in-linear-regression) for a good explanation between the natural variance of the regression curve and the uncertainty we have about our estimation. It's important to take both into account, and distance from the mean of our features will increase the uncertainty of our estimates. As far as I know, there's no easy built-in way to estimate the 95% of our regression line estimate.
+
+```{r}
+# getting the covariance matrix of a regression's estimated coefficients
+summary_lm_admit <- summary(lm(admit ~ gre + gpa, data = admit_data))
+summary_lm_admit$cov.unscaled
+
+# getting the estimated "natural" variance of the regression
+natural_variance <- summary_lm_admit$sigma^2
+```
+
+Local (kernel) regressions.
+
+```{r}
+# LOESS
+#   local polynomial regression fitting
+#   (copied from the help file)
+cars.lo <- loess(dist ~ speed, cars, degree = 2, se = TRUE)
+predict(cars.lo, data.frame(speed = seq(5, 30, 1)), se = TRUE)
+
+# Kernel Smoothing
+#   see KernSmooth for additional features
+head(ksmooth(cars$speed, cars$dist, "normal", bandwidth = 2))
+with(cars, {
+    plot(speed, dist)
+    lines(ksmooth(speed, dist, "normal", bandwidth = 2), col = 2)
+    lines(ksmooth(speed, dist, "normal", bandwidth = 5), col = 3)
+})
+```
+
+GAMs.
+
+The `caret` package may be helpful to avoid learning various syntax here, but be careful to understand what `caret` is assuming.
+
+See [this blog post](https://www.r-bloggers.com/modelling-seasonal-data-with-gams/) for a more detailed info on various features and understanding what's under the hood.
+
+```{r}
+library(gam)
+
+data(kyphosis)
+gam.object <- gam(Kyphosis ~ s(Age,4) + Number, family = binomial, data=kyphosis,
+    trace=TRUE)
+summary(gam.object)
+
+gam_pred_values <- predict(gam.object, type = "terms")
+head(gam_pred_values, 10)
+```
+
