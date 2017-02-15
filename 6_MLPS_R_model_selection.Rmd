@@ -20,4 +20,82 @@ Key specific tasks we covered in this lecture:
 * average squared error
 * k-fold cross validation
 * regularization and revisiting cross-validation in sparse linear models
-* AIC, BIC, MDL
+* grid search
+* AIC, BIC
+
+
+```{r}
+library(tidyverse)
+# Train/Validation/Test Splits
+
+all_data <- data.frame(location = sample(c("NA", "EU", "AS", "AF", "?"),
+                                         size = 1000, replace = T),
+                       outcome = sample(c(1, 2, 3, 4),
+                                         size = 1000, replace = T))
+
+test_indices <- sample(seq(10),
+                       size = nrow(all_data),
+                       replace = T)
+held_out_test <- all_data[test_indices == 10, ]
+all_training <- all_data[test_indices != 10, ]
+
+for (fold in seq(9)) {
+  training <- all_training[test_indices != fold, ]
+  validation <- all_training[test_indices == fold, ]
+  
+  print(paste("Fold #", fold))
+  print(paste("has avg outcome", mean(validation$outcome,
+                                      na.rm = T)))
+}
+```
+
+```{r}
+# Empirical Misclassifcation Error
+predictions <- data.frame(y = sample(c(0,1),
+                                     size = 1000,
+                                     r = T,
+                                     prob = c(3,1)),
+                          pred = runif(1000))
+# ASSUME: use 0.5 as a prediction threshold
+predictions <- mutate(predictions,
+                      errors = as.numeric(y == round(pred)))
+error_rate <- mean(predictions$errors)
+print(paste('Misclassfication Rate is', error_rate))
+
+# Average Squared Error
+# Empirical Misclassifcation Error
+predictions_regression <- 
+  data.frame(y = rnorm(1000),
+             pred = rnorm(1000))
+# ASSUME: use 0.5 as a prediction threshold
+predictions_regression <- predictions_regression %>%
+  mutate(sq_error = (y - pred)^2)
+mse <- mean(predictions_regression$sq_error)
+print(paste('Avg/Mean Squared Error is', mse))
+```
+
+### K-Fold Cross Validation
+
+This is left for a HW assignment. Use the above code for creating and iterating over train/validation splits. The key addition for the HW will be to record your data from different iterations. You can try using a pre-made data frame or making a list of data.frames and then using `bind_rows()` to combine them.
+
+### Regularization & Grid Search
+
+To identify the best performing regularization parameters, we can use a grid search, in 1 or more dimensions. We ask you to do so in the HW2. To do so, use the above cross-validation loop and inside it, insert a nested for loop where you try different regularization parameters in your grid. You'll want to practice with saving the data from each parameter and each validation fold.
+
+I recommend using a list of data.frames (even if it's just a one row data frame) and then using `bind_rows()` to combine the list of data frames into one data frame. Importantly, the column names should be the same.
+
+### AIC/BIC
+
+For linear models, you can use the built-in AIC/BIC commands.
+
+```{r}
+lm_full <- lm(mpg ~ ., data = mtcars)
+lm_small <- lm(mpg ~ cyl + hp, data = mtcars)
+# AIC
+AIC(lm_full, k = 2)
+AIC(lm_small, k = 2)
+# BIC
+AIC(lm_full, k = log(nobs(lm_full)))
+AIC(lm_small, k = log(nobs(lm_full)))
+```
+

@@ -9,14 +9,14 @@ This course provides R as a basis for teaching (though other languages are accep
 
 To view the cheatsheets in your browser:
 
-* Lecture 1 (Introduction to R, RStudio, Tidyverse): <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/0_MLPS_R_intro.html>
+* [Lecture 1 (Introduction to R, RStudio, Tidyverse)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/0_MLPS_R_intro.html>)
 * Lecture 2 (Visualization): (too large to open, download HTML file from GitHub and open with browser)
-* Lecture 3 (Data Preparation): <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/3_MLPS_R_data_preparation.html>
-* Lecture 4 (Linear Regression & Sparsity): <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/4_MLPS_R_lin_reg_and_sparsity.html>
-* Lecture 5 (Logistic & Non-Linear Regression): <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/5_MLPS_R_logistic_nonlinear_regression.html>
+* [Lecture 3 (Data Preparation)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/3_MLPS_R_data_preparation.html>)
+* [Lecture 4 (Linear Regression & Sparsity)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/4_MLPS_R_lin_reg_and_sparsity.html>)
+* [Lecture 5 (Logistic & Non-Linear Regression)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/5_MLPS_R_logistic_nonlinear_regression.html>)
+* [Lecture 6 (Model Selection)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/6_MLPS_R_model_selection.html>)
 
 Forthcoming:
-* Lecture 6 (Model Selection): <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/6_MLPS_R_model_selection.html>
 * Lecture 7 (Model Evaluation): <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/7_MLPS_R_model_evaluation.html>
 * Lecture 8 (Tree-based Models): <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/8_MLPS_R_tree_methods.html>
 
