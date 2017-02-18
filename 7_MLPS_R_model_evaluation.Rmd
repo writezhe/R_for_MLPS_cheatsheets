@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F, message = F)
 ```
 
 ## Lecture 7: Model Evaluation
@@ -21,3 +21,75 @@ Key specific tasks we covered in this lecture:
 * AUC
 * precision-recall curve
 * lift and profit curves
+
+```{r}
+library(tidyverse)
+# Calculating a confusion matrix by hand
+actual_outcomes = sample(c(0,1), 1000, r = T,
+                         prob = c(2,1))
+preds = c(runif(700, 0, 0.5), runif(300, 0, 1))
+
+simple_classifer <- function(preds, cutoff) {
+  if_else(preds >= cutoff, 1, 0)
+}
+
+TP = sum(simple_classifer(preds, 0.5) == 1 &
+           actual_outcomes == 1)
+FP = sum(simple_classifer(preds, 0.5) == 1 &
+           actual_outcomes == 0)
+FN = sum(simple_classifer(preds, 0.5) == 0 &
+           actual_outcomes == 1)
+TN = sum(simple_classifer(preds, 0.5) == 0 &
+           actual_outcomes == 0)
+sum(TP+FP+FN+TN)
+
+# see `caret` package for built-in confusion matrix
+caret::confusionMatrix(data = factor(simple_classifer(preds, 0.5)),
+                       reference = factor(actual_outcomes),
+                       positive = "1")
+```
+
+Use the above values to calculate `precision`, `recall`, and `F-measure`.
+
+```{r}
+# ROC and AUC
+library(pROC)
+
+# example with real dataset
+data(aSAH)
+qplot(aSAH$s100b)
+roc_obj_aSAH <- roc(aSAH$outcome, aSAH$s100b,
+    levels=c("Good", "Poor"))
+plot(roc_obj_aSAH)
+
+# example using a bad predictor (can be any ordered values)
+qplot(aSAH$age)
+roc_obj_aSAH <- roc(aSAH$outcome, aSAH$age,
+    levels=c("Good", "Poor"))
+plot(roc_obj_aSAH)
+```
+
+
+Precision/Recall curves: there doesn't seem to be a way in `caret` to plot the PR curves. This recent package below seems good and well-documented (it conflicts with `pROC` package though).
+
+```{r}
+library(precrec)
+sscurves <- evalmod(scores = aSAH$s100b, labels = aSAH$outcome)
+autoplot(sscurves)
+```
+
+Another version of a useful PR curve is to plot two line graphs, one measuring precision and the other measuring recall. On the x-axis, you can evaluate a grid between 0 and 1 (the range of your predictors) as the sample cutoff value. For each grid value, it will tell you the precision/recall for that cutoff. This is something that is missing on the above graphics, **what the cutoff values are**.
+
+For Lift curves, see the following `caret` [tutorial section](https://topepo.github.io/caret/measuring-performance.html#lift-curves) showing the creation of lift curves that compare 3 different types of classifiers (FDA, LDA, and decision trees). First, they generate train/test data, pre-define some cross-validation splits, and then train the 3 models. Then, they make predictions from each of the 3 trained models on the test folds (*note, they put it all into one dataframe so that it can be easily plotted*). Then, they use the `caret` `lift` command to create the plots, where they show a roughly 2:1 lift to get 60% of the Positives.
+
+To get the profit curves, use the Profit equation alongside the above calculated Lift results.
+
+```{r}
+# additional Lift example using earlier aSAH dataset
+
+lift_obj <- caret::lift(outcome ~ s100b, data = aSAH, class = "Good")
+print(lift_obj)
+
+plot(lift_obj, value = 50)
+```
+
