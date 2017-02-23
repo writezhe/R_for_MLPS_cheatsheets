@@ -76,7 +76,10 @@ print(paste('Avg/Mean Squared Error is', mse))
 
 ### K-Fold Cross Validation
 
-This is left for a HW assignment. Use the above code for creating and iterating over train/validation splits. The key addition for the HW will be to record your data from different iterations. You can try using a pre-made data frame or making a list of data.frames and then using `bind_rows()` to combine them.
+This is left for a HW assignment. Use the code for creating and iterating over train/validation splits as a hint to start writing your own cross-validation functions. 
+
+The key addition for the HW will be to record your data from different iterations. You can try using a pre-made data frame or making a list of data.frames and then using `bind_rows()` to combine them.
+
 
 ### Regularization & Grid Search
 
