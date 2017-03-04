@@ -17,9 +17,118 @@ Key specific tasks we covered in this lecture:
 
 * basic SVM fit
 * SVM with hard margin
-* RBF, polynomial, sigmoid kernel feature transformation
-* kernel PCA
 * normalizing input variables for SVM
-* SVM regularization parameter
+* RBF, polynomial, sigmoid kernel feature transformation
+* SVM regularization parameter C
+* kernel PCA
+
 
 ### Basic SVM Examples
+
+There are several possible SVM packages, we will discuss `e1071`.
+
+```{r}
+library(tidyverse)
+library(e1071)
+
+df <- airquality %>% 
+  mutate(high_temp = ifelse(Temp > 75, 1, 0)) %>%
+  drop_na()
+
+wrong_svm <- svm(high_temp ~ Ozone + Solar.R + Wind, data = df)
+summary(wrong_svm)
+```
+
+Be careful about ensuring that you're performing classification.
+
+```{r}
+# to get the correct classification SVM: 
+#   either change the outcome to a factor
+#   or specify explicitly
+svm_classifier <- svm(high_temp ~ Ozone + Solar.R + Wind, 
+                      data = df,
+                      type = 'C-classification')
+
+df <- df %>% mutate(high_temp = as.factor(high_temp))
+svm_classifier <- svm(high_temp ~ Ozone + Solar.R + Wind, 
+                      data = df)
+summary(svm_classifier)
+```
+
+### Adjusting SVM options (`C`, normalizing features, kernel trick transformation)
+
+```{r}
+# we specify normalizing the (numeric) features
+#   the kernel to use
+#   the cost (C) parameter for the soft margin
+
+svm_linear_kernel <- 
+  svm(high_temp ~ Ozone + Solar.R + Wind, 
+      data = df, kernel = 'linear', scale = T,
+      cost = 0.5,
+      type = 'C-classification')
+
+svm_polynomial_kernel <- 
+  svm(high_temp ~ Ozone + Solar.R + Wind, 
+      data = df, kernel = 'polynomial', scale = T,
+      cost = 0.75, degree = 2, gamma = 0.1,
+      type = 'C-classification')
+
+svm_rbf_kernel <- 
+  svm(high_temp ~ Ozone + Solar.R + Wind, 
+      data = df, kernel = 'radial', scale = T,
+      cost = 0.75, gamma = 0.25,
+      type = 'C-classification')
+
+# for sigmoid kernel, use kernel = 'sigmoid`
+
+# to get probabilities, use the probability option
+svm_rbf_kernel <- 
+  svm(high_temp ~ Ozone + Solar.R + Wind, 
+      data = df, kernel = 'radial', scale = T,
+      cost = 0.75, gamma = 0.25,
+      probability = T,
+      type = 'C-classification')
+```
+
+### Predictions and Plotting SVM Fits
+
+```{r}
+# predictions
+svm_rbf_preds <- predict(svm_rbf_kernel, newdata = df)
+
+svm_rbf_probability <- predict(svm_rbf_kernel, newdata = df,
+                               probability = T) %>%
+  attr("probabilities") %>% as_data_frame()
+
+# simple 2-D plots
+#   the predicted classification region is color
+#   the actual ground truth is in black "X" or red "O"
+plot(svm_rbf_kernel, 
+     data = df, 
+     formula = Ozone ~ Wind) # which dimensions to compare
+plot(svm_linear_kernel, 
+     data = df, 
+     formula = Ozone ~ Wind)
+```
+
+
+# Kernel PCA
+
+```{r}
+library(kernlab)
+# another example using the iris
+data(iris)
+test <- sample(1:150,20)
+
+kpc <- kpca(~.,data=iris[-test,-5],kernel="rbfdot",
+            kpar=list(sigma=0.2),features=2)
+
+#print the principal component vectors
+pcv(kpc) %>% head(25)
+
+#plot the data projection on the components
+plot(rotated(kpc),col=as.integer(iris[-test,5]),
+     xlab="1st Principal Component",ylab="2nd Principal Component")
+```
+
