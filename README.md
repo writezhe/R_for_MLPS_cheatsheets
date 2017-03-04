@@ -16,9 +16,10 @@ To view the cheatsheets in your browser:
 * [Lecture 5 (Logistic & Non-Linear Regression)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/5_MLPS_R_logistic_nonlinear_regression.html>)
 * [Lecture 6 (Model Selection)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/6_MLPS_R_model_selection.html>)
 * [Lecture 7 (Model Evaluation)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/7_MLPS_R_model_evaluation.html>)
+* [Lecture 8 (Tree-based Models)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/8_MLPS_R_tree_methods.html>)
 
 Forthcoming:
-* Lecture 8 (Tree-based Models): <http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/8_MLPS_R_tree_methods.html>
+
 
 ### Course Description
 
