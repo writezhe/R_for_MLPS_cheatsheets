@@ -1,0 +1,25 @@
+---
+title: "9_MLPS_R_SVM_Kernels"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "3/04/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F, message = F)
+```
+
+## Lecture 9: Support Vector Machines & Kernels
+
+Key specific tasks we covered in this lecture:
+
+* basic SVM fit
+* SVM with hard margin
+* RBF, polynomial, sigmoid kernel feature transformation
+* kernel PCA
+* normalizing input variables for SVM
+* SVM regularization parameter
+
+### Basic SVM Examples

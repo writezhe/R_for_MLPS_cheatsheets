@@ -1,18 +1,20 @@
 ---
-title: "8_MLPS_R_tree_methods"
+title: "11_MLPS_R_ensemble_learning"
 author: "Zhe Zhang (TA - Heinz CMU PhD)"
-date: "1/28/2017"
+date: "3/04/2017"
 output: 
   html_document:
     css: '~/Dropbox/avenir-white.css'
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, error = F)
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F, message = F)
 ```
 
-## Lecture 8: Tree-based Methods
+## Lecture 11: Ensemble Learning
 
 Key specific tasks we covered in this lecture:
 
 * 
+
+### 

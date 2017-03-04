@@ -1,0 +1,26 @@
+---
+title: "10_MLPS_R_instance_based_learning"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "3/04/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F, message = F)
+```
+
+## Lecture 10: Instance Based Learning
+
+Key specific tasks we covered in this lecture:
+
+* KNN classifier, with different k
+* Euclidean distance, Mahalanobis distance
+* kernel trick/transformation KNN
+* kernel density local regression
+* local linear regression / locally weighted regression
+* locally weighted polynomial regression
+* kernel regression classifier
+
+### 
