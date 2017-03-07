@@ -18,9 +18,10 @@ To view the cheatsheets in your browser:
 * [Lecture 7 (Model Evaluation)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/7_MLPS_R_model_evaluation.html>)
 * [Lecture 8 (Tree-based Models)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/8_MLPS_R_tree_methods.html>)
 * [Lecture 9 (SVM & kernels)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/9_MLPS_R_SVM_kernels.html>)
+* [Lecture 10 (Instance Based Learning)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/10_MLPS_R_instance_based_learning.html>)
 
 Forthcoming:
-* Lecture 10 (Instance Based Learning)
+
 * Lecture 11 (Ensemble Learning)
 
 ### Course Description

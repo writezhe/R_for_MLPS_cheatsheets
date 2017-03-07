@@ -16,11 +16,129 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, error = F, message = F)
 Key specific tasks we covered in this lecture:
 
 * KNN classifier, with different k
-* Euclidean distance, Mahalanobis distance
-* kernel trick/transformation KNN
+* More advanced KNN: different distance, kernel trick/transformation KNN
 * kernel density local regression
-* local linear regression / locally weighted regression
+* local linear regression
 * locally weighted polynomial regression
-* kernel regression classifier
 
-### 
+### KNN
+
+```{r}
+library(tidyverse)
+library(class)
+
+df <- airquality %>% 
+  mutate(high_temp = ifelse(Temp > 75, "High", "Low")) %>%
+  drop_na() %>%
+  select(-Month, -Day) %>%
+  mutate_if(.funs = scale, .predicate = is.numeric)
+
+# important to scale!
+
+train_sample <- sample(seq(3), nrow(df), r = T)
+train <- df[train_sample != 3, ]
+test <- df[train_sample == 3, ]
+
+knn_preds <- knn(train %>% select(-high_temp), 
+                 test%>% select(-high_temp), 
+                 cl = train$high_temp,
+                 k = 4)
+
+# measure performance
+table(knn_preds, test$high_temp)
+mean(knn_preds == test$high_temp)
+
+# leave 1 out knn.cv
+# k = 2
+cv_preds <- knn.cv(df %>% select(-high_temp), 
+                   cl = df$high_temp, k = 2)
+mean(cv_preds == df$high_temp)
+# k = 3
+cv_preds <- knn.cv(df %>% select(-high_temp), 
+                   cl = df$high_temp, k = 3)
+mean(cv_preds == df$high_temp)
+# k = 4
+cv_preds <- knn.cv(df %>% select(-high_temp), 
+                   cl = df$high_temp, k = 4)
+mean(cv_preds == df$high_temp)
+# k = 5
+cv_preds <- knn.cv(df %>% select(-high_temp), 
+                   cl = df$high_temp, k = 5)
+mean(cv_preds == df$high_temp)
+
+# multi-variable knn
+df <- iris %>%
+    mutate_if(.funs = scale, .predicate = is.numeric)
+# important to scale!
+
+train_sample <- sample(seq(3), nrow(iris), r = T)
+train <- df[train_sample != 3, ]
+test <- df[train_sample == 3, ]
+
+knn_preds <- knn(train %>% select(-Species), 
+                 test%>% select(-Species), 
+                 cl = train$Species,
+                 k = 4)
+table(knn_preds, test$Species)
+mean(knn_preds == test$Species)
+```
+
+
+### More Advanced KNN
+
+See the `kknn` package and the `kknn` command. It has options for using a kernel distance options, and customizing the Minkowski distance. See this [manual](https://cran.r-project.org/web/packages/kknn/kknn.pdf). 
+
+In general, using your own distance function may be possible with the `FastKNN` package? See this [StackOverflow question](http://stackoverflow.com/questions/23449726/find-k-nearest-neighbors-starting-from-a-distance-matrix)
+
+
+### Kernel Density Regression
+
+Predict new points from kernel density using the `x.points` option in `ksmooth`.
+
+```{r}
+df <- airquality %>% 
+  mutate(high_temp = ifelse(Temp > 75, "High", "Low")) %>%
+  drop_na()
+
+# box kernel
+box_kernel2_reg <- ksmooth(x = df$Wind, y = df$Temp,
+                          kernel = 'box', bandwidth = 2)
+box_kernel5_reg <- ksmooth(x = df$Wind, y = df$Temp,
+                          kernel = 'box', bandwidth = 5,
+                          x.points = c(5, 10, 15, 20))
+# gaussian normal kernel
+gauss_kernel5_reg <- ksmooth(x = df$Wind, y = df$Temp,
+                          kernel = 'normal', bandwidth = 3)
+
+# this could be made in ggplot2, but I've skipped it for speed
+#   following the help file instead
+ggplot(df, aes(x = Wind, y = Temp)) + geom_point() +
+  geom_line(data = as.data.frame(box_kernel2_reg), aes(x, y), color = 'red') +
+  geom_line(data = as.data.frame(gauss_kernel5_reg), aes(x, y), color = 'blue')
+```
+
+
+### Locally Weighted Regression
+
+```{r}
+library(KernSmooth)
+
+# local linear regression
+df <- airquality %>% 
+  mutate(high_temp = ifelse(Temp > 75, "High", "Low")) %>%
+  drop_na()
+
+air_loclin <- locpoly(x = df$Wind, y = df$Temp,
+                      degree = 1, bandwidth = 5)
+
+# local polynomial
+air_locpoly <- locpoly(x = df$Wind, y = df$Temp,
+                      degree = 2, bandwidth = 5)
+
+# plotted
+ggplot(df, aes(x = Wind, y = Temp)) + geom_point() +
+  geom_line(data = as.data.frame(air_loclin), aes(x, y), color = 'red') +
+  geom_line(data = as.data.frame(air_locpoly), aes(x, y), color = 'blue')
+```
+
+
