@@ -1,7 +1,7 @@
 ---
 title: "11_MLPS_R_ensemble_learning"
 author: "Zhe Zhang (TA - Heinz CMU PhD)"
-date: "3/04/2017"
+date: "3/07/2017"
 output: 
   html_document:
     css: '~/Dropbox/avenir-white.css'
@@ -15,6 +15,79 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, error = F, message = F)
 
 Key specific tasks we covered in this lecture:
 
-* 
+* bootstrap aggregating (bagging)
+* random forests (bagging, with selecting number of features at each node)
+* adaptive boosting (adaBoost)
 
-### 
+### Tree Ensembles
+
+You can use the `randomForest` package for both bagging and boosting. They will differ depending on how they choose features for each node.
+
+```{r}
+library(tidyverse)
+library(randomForest)
+
+num_attributes = length(names(iris)) - 1
+# bagging
+bagged_iris <- randomForest(Species ~ ., data = iris,
+                            type = 'classification',
+                            mtry = num_attributes)
+
+# forest
+forest_iris <- randomForest(Species ~ ., data = iris,
+                            type = 'classification',
+                            mtry = sqrt(num_attributes))
+
+# predictions (in-sample for brevity)
+predict(forest_iris,
+        newdata = iris,
+        type = 'vote') %>% head(15)
+predict(forest_iris,
+        newdata = iris,
+        type = 'response') %>% head(15)
+predict(forest_iris,
+        newdata = iris,
+        type = 'prob') %>% head(15)
+```
+
+
+### adaBoost
+
+The `ada` package builds on top of the `rpart` package to generate the weak learners.
+
+```{r}
+library(ada)
+
+dat <- airquality %>% 
+  mutate(high_temp = ifelse(Temp > 75, "High", "Low")) %>%
+  drop_na() %>%
+  select(-Month, -Day, -Temp) %>%
+  mutate_if(.funs = scale, .predicate = is.numeric)
+
+splits <- sample(c(0,1), size = nrow(dat), r = T, prob = c(2,1))
+train <- dat[splits == 0, ]
+test <- dat[splits == 1, ]
+
+# enforcing decision stumps
+#   
+ada_air <- ada(high_temp ~ ., data = train,
+               test.x = test %>% select(-high_temp),
+               test.y = test$high_temp,
+               type = 'discrete',
+               rpart.control(maxdepth=1,cp=-1,minsplit=0,xval=0))
+
+# get predictions
+predict(ada_air, 
+        newdata = test,
+        type = 'vector') %>% head()
+# getting probabilities are tricky,
+#   both in interpretation
+#   and in making sure you know which column represents what
+predict(ada_air, 
+        newdata = test,
+        type = 'probs') %>% head()
+
+# quick built in plot
+plot(ada_air, test = T)
+```
+
