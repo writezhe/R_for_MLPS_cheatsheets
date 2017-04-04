@@ -1,0 +1,59 @@
+---
+title: "12_MLPS_R_clustering_part1"
+author: "Zhe Zhang (TA - Heinz CMU PhD)"
+date: "3/22/2017"
+output: 
+  html_document:
+    css: '~/Dropbox/avenir-white.css'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, error = F, message = F)
+```
+
+## Lecture 12: Clustering Part 1
+
+Key specific tasks we covered in this lecture:
+
+* various distance metrics
+* hierarchical clustering (top-down, bottom-up, single link, complete link)
+* k-means clustering
+
+**distance metrics**. Lots of the distance metrics covered in class can be implemented on your own. If you find yourself using a more complex distance metric though, there may be R implementations available via a quick search. The `dist` function in base R includes {euclidean, maximum, manhattan, canberra, binary, minkowski}. Also, there is a `stringDist` package available, that can do various distances based on edit distance (e.g. Hamming, Damerau-Levenshtein, etc.) or others like Jaccard or Jaro-Winkler. 
+
+Another package may allow arbitrary distance functions, see here [for more](http://stackoverflow.com/questions/7524042/how-to-specify-distance-metric-while-for-kmeans-in-r).
+
+### hierarchical clustering
+
+In base R, there is the `hclust` command, which includes both complete, centroid, and single link hierarchical clustering. Since each element starts as its own cluster, this is bottom-up clustering.
+
+```{r, fig.height=4, fig.width = 5}
+cluster_result <- hclust(dist(as.matrix(mtcars)),
+                         method = 'complete')
+plot(cluster_result)
+```
+
+A quick search will reveal other useful packages. Some possible help links:
+[one](https://cran.r-project.org/web/packages/dendextend/vignettes/Cluster_Analysis.html), [two](https://cran.r-project.org/web/packages/hybridHclust/hybridHclust.pdf), [three](https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Clustering/Hierarchical_Clustering).
+
+### k-means clustering
+
+In base R, there is the `kmeans()` function. There are a few straightforward options: {`x` dataset, `centers` (number of k), and `nstart` (number of random restarts)}.
+
+```{r}
+library(dplyr); library(ggplot2)
+# from the examples
+dat <- data.frame(x = c(rnorm(50, 0, 0.3), rnorm(50, 1, 0.3)),
+                  y = c(rnorm(50, 0, 0.3), rnorm(50, 1, 0.3)))
+dat <- sample_n(dat, size = nrow(dat))
+qplot(dat$x, dat$y)
+
+kmeans_result <- kmeans(dat, centers = 2, nstart = 20)
+```
+
+The kmeans output will have several useful pieces, including the identified centroids, the  cluster assignments for the dataset used, the sizes of each cluster, and the various sum of squared calculations (the objective).
+
+```{r}
+kmeans_result
+```
+

@@ -20,6 +20,7 @@ To view the cheatsheets in your browser:
 * [Lecture 9 (SVM & kernels)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/9_MLPS_R_SVM_kernels.html>)
 * [Lecture 10 (Instance Based Learning)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/10_MLPS_R_instance_based_learning.html>)
 * [Lecture 11 (Ensemble Learning)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/11_MLPS_R_ensemble_learning.html>)
+* [Lecture 12 (Clustering)](<http://htmlpreview.github.io/?https://github.com/writezhe/R_for_MLPS_cheatsheets/blob/master/12_MLPS_R_clustering.html>)
 
 
 ### Course Description
